@@ -59,7 +59,7 @@ objects, before returning from the sync callback.")
 Called after the sync response is parsed into the session
 objects, before returning from the sync callback.")
 
-(defvar matrix-request 'matrix-request-url-retrieve
+(defalias 'matrix-request 'matrix-request-url-retrieve
   "the request back-end function. for now it can be one of
 `matrix-request-url-retrieve' or `matrix-request-request'")
 
