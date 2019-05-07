@@ -44,7 +44,7 @@ tokens.  Logs should be sanitized before sharing.")
   "Name of buffer used by `matrix-log'.")
 
 (defvar matrix-synchronous nil
-  "When non-nil, run `matrix-request' requests synchronously.")
+ "When non-nil, run `matrix-request' requests synchronously.")
 
 (defvar matrix-warn-unimplemented nil
   "Give warnings for unimplemented event handlers.")
@@ -58,6 +58,10 @@ objects, before returning from the sync callback.")
   "Hooks run with session as argument after every sync.
 Called after the sync response is parsed into the session
 objects, before returning from the sync callback.")
+
+(defvar matrix-request 'matrix-request-url-retrieve
+  "the request back-end function. for now it can be one of
+`matrix-request-url-retrieve' or `matrix-request-request'")
 
 ;;;; Macros
 
@@ -362,25 +366,25 @@ MESSAGE and ARGS should be a string and list of strings for
 (defun matrix-get (&rest args)
   "Call `matrix-request-request' with ARGS for a \"GET\" request."
   (declare (indent defun))
-  (apply #'matrix-request-request args ))
+  (apply #'matrix-request args ))
 
 (defun matrix-post (&rest args)
   "Call `matrix-request-request' with ARGS for a \"POST\" request."
   (declare (indent defun))
   (nconc args (list :method 'post))
-  (apply #'matrix-request-request args))
+  (apply #'matrix-request args))
 
 (defun matrix-put (&rest args)
   "Call `matrix-request-request' with ARGS for a \"PUT\" request."
   (declare (indent defun))
   (nconc args (list :method 'put))
-  (apply #'matrix-request-request args))
+  (apply #'matrix-request args))
 
 (defun matrix-delete (&rest args)
   "Call `matrix-request-request' with ARGS for a \"DELETE\" request."
   (declare (indent defun))
   (nconc args (list :method 'delete))
-  (apply #'matrix-request-request args))
+  (apply #'matrix-request args))
 
 (defun matrix-lookup (name)
   "Return host for Matrix server for domain NAME.
@@ -406,7 +410,7 @@ the standard Matrix port."
 
 ;;;;; Request
 
-(cl-defun matrix-request (session endpoint &key data success
+(cl-defun matrix-request-url-retrieve (session endpoint &key data success
                                   raw-data (content-type "application/json")
                                   (method "GET") (error #'matrix-request-error-callback) timeout
                                   (query-on-exit t))
