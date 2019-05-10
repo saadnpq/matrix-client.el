@@ -59,9 +59,15 @@ objects, before returning from the sync callback.")
 Called after the sync response is parsed into the session
 objects, before returning from the sync callback.")
 
-(defalias 'matrix-request 'matrix-request-url-retrieve
-  "the request back-end function. for now it can be one of
-`matrix-request-url-retrieve' or `matrix-request-request'")
+(defcustom matrix-use-request-backend t
+  "mark rooms as read after selecting its window"
+  :type 'boolean
+  :set (lambda (option value)
+         (if value
+             (defalias 'matrix-request 'matrix-request-request)
+           (defalias 'matrix-request 'matrix-request-url-retrieve))
+         (set-default option value)))
+
 
 ;;;; Macros
 
