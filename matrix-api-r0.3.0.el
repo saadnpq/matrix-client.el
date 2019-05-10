@@ -44,7 +44,7 @@ tokens.  Logs should be sanitized before sharing.")
   "Name of buffer used by `matrix-log'.")
 
 (defvar matrix-synchronous nil
-  "When non-nil, run `matrix-request' requests synchronously.")
+ "When non-nil, run `matrix-request' requests synchronously.")
 
 (defvar matrix-warn-unimplemented nil
   "Give warnings for unimplemented event handlers.")
@@ -58,6 +58,16 @@ objects, before returning from the sync callback.")
   "Hooks run with session as argument after every sync.
 Called after the sync response is parsed into the session
 objects, before returning from the sync callback.")
+
+(defcustom matrix-use-request-backend t
+  "mark rooms as read after selecting its window"
+  :type 'boolean
+  :set (lambda (option value)
+         (if value
+             (defalias 'matrix-request 'matrix-request-request)
+           (defalias 'matrix-request 'matrix-request-url-retrieve))
+         (set-default option value)))
+
 
 ;;;; Macros
 
@@ -410,7 +420,7 @@ the standard Matrix port."
 
 ;;;;; Request
 
-(cl-defun matrix-request (session endpoint &key data success
+(cl-defun matrix-request-url-retrieve (session endpoint &key data success
                                   raw-data (content-type "application/json")
                                   (method "GET") (error #'matrix-request-error-callback) timeout
                                   (query-on-exit t))
