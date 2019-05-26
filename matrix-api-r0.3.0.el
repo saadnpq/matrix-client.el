@@ -60,7 +60,7 @@ Called after the sync response is parsed into the session
 objects, before returning from the sync callback.")
 
 (defcustom matrix-use-request-backend t
-  "mark rooms as read after selecting its window"
+  "use request.el rather than the built in url.el"
   :type 'boolean
   :set (lambda (option value)
          (if value
